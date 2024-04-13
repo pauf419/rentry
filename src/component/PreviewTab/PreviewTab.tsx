@@ -7,7 +7,7 @@ import m from "./PreviewTab.module.sass";
 const PreviewTab = () => {
     const { store } = useContext(ctx)
     return (
-        <MDEditor.Markdown className={m.text} source={store.text} style={{ whiteSpace: 'pre-wrap', background: "transparent", color: "white" }} />
+        <MDEditor.Markdown className={m.text} source={store.text} style={{ background: "transparent", color: "white"}} />
 
     )
 }

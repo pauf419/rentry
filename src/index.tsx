@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { createContext } from 'react';
 import Store from './store';
+import "katex/dist/katex.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
