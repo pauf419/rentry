@@ -1,30 +1,20 @@
 import { observer } from "mobx-react-lite"
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ctx } from "../..";
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import MDEditor from '@uiw/react-md-editor';
+import React from "react";
+import m from "./TextTab.module.sass"
+import Markdown from "react-markdown";
+
 
 const TextTab = () => {
-
-    const markdown = `A paragraph with *emphasis* and **strong importance**.
-
-    > A block quote with ~strikethrough~ and a URL: https://reactjs.org.
-    
-    * Lists
-    * [ ] todo
-    * [x] done
-    
-    A table:
-    
-    | a | b |
-    | - | - |
-    `
-
-    const {store} = useContext(ctx);
+    const { store } = useContext(ctx);
 
     return (
-        <div>TextTab: </div>
-    )
+        <div className="container">
+            <textarea className={m.Textarea} onChange={(e) => store.setText(e.target.value)} value={store.text} />
+        </div>
+    );
 }
 
 export default observer(TextTab)
