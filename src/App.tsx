@@ -1,24 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import How from "./component/HowTav/How";
+import PreviewTab from "./component/PreviewTab/PreviewTab";
+import TextTab from "./component/TextTab/TextTab";
+import Toolbar from "./component/Toolbar/Toolbar";
+import RootPage from "./page/RootPage/RootPage";
+import "./styles/index.sass"
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <RootPage/>
     </div>
   );
 }

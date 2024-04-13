@@ -1,0 +1,30 @@
+
+.RootPageContainer
+    display: flex 
+    flex-direction: column
+    min-height: 100vh
+    max-height: 100vh
+
+    .ToolbarFooter 
+        width: 1140px !important
+        max-width: 100% !important
+        margin: auto
+        padding-right: .5rem
+        padding-left: .5rem
+        display: flex
+        justify-content: space-between
+
+        .FooterInps 
+            display: flex
+            gap: .5rem
+    
+@media screen and (max-width: 575px) 
+    .ToolbarFooter
+        flex-direction: column-reverse
+        gap: .5rem
+        align-items: flex-start
+
+        .FooterInps 
+            width: calc(100% - .5rem)
+            display: grid!important
+            grid-template-columns: 50% 50%

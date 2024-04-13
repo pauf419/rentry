@@ -1,0 +1,42 @@
+
+.ToolbarWrapper 
+    display: flex
+    flex-direction: column
+    flex: 1 0
+    width: 1140px !important
+    max-width: 100% !important
+    padding-right: .5rem
+    padding-left: .5rem
+    margin: .5rem auto
+    
+    .ToolbarHeader
+        display: flex
+        justify-content: flex-start
+
+        .ToolbarButton
+            padding: .5rem 1rem
+            background: #1c1c1c
+            cursor: pointer
+            transition: .20s all ease
+            border-radius: 0 !important
+            border: 0 !important
+            color: #83898e
+
+            &:hover 
+                color: #4b99d1
+
+            &.ButtonFocus 
+                background: #262626
+                color: #bdc0c2
+
+    .ToolbarContent 
+        display: flex
+        flex: 1 0
+        background: #262626 
+
+        .TabWrapper
+            opacity: 0
+            transition: .3s all ease
+
+            &.TabFocus 
+                opacity: 1
