@@ -28,14 +28,23 @@ const EditPage:FC = () => {
         localStorage.setItem("edit_code", "")
     }
 
-    const editMarkdown = async (e: FormEvent<HTMLFormElement>) => { 
-        e.preventDefault()
+    const editMarkdown = async () => { 
+        if(!editCode) return setIsCodeInvald(true)
+
         const resp = await store.editMarkdown(editCode, newEditCode)
         if(resp instanceof AxiosError) return setIsCodeInvald(true)
         const {id, edit_code} = resp
         localStorage.setItem("edit_code", edit_code)
         window.location.href = "/"+id
     }
+
+    const deleteMarkdown = async() => {
+        if(!editCode) return setIsCodeInvald(true)
+
+        const resp = await store.delete(editCode)
+        if(resp instanceof AxiosError) return setIsCodeInvald(true)
+        window.location.href = "/"
+    }  
 
     useEffect(() => {
         setup(id!)
@@ -78,7 +87,7 @@ const EditPage:FC = () => {
                     title: "Preview"
                 }
             ]}/>
-            <form className={`${m.ToolbarFooter} ${m.Edit}`} onSubmit={e => editMarkdown(e)}>
+            <div className={`${m.ToolbarFooter} ${m.Edit}`}>
                 <div className={m.EditInps}>
 
                     <div className={`${m.InputOutline} ${isCodeInvalid ? m.Active : m.Inactive}`}>
@@ -89,18 +98,18 @@ const EditPage:FC = () => {
                 </div>
                 <div className={m.EditBtns}>
                     <div className={m.StartBlock}>
-                        <button type="submit" className={`${m.GoBtn} ${m.SaveBtn}`}>
+                        <button type="submit" className={`${m.GoBtn} ${m.SaveBtn}`} onClick={() => editMarkdown()}>
                             Save
                         </button>
                         <button className={`${m.GoBtn}`} onClick={() => window.location.href="/"+id}>
                             Back
                         </button>
                     </div>
-                    <button className={`${m.GoBtn} ${m.DeleteBtn}`}>
+                    <button className={`${m.GoBtn} ${m.DeleteBtn}`} onClick={() => deleteMarkdown()}>
                         Delete
                     </button>
                 </div>    
-            </form>
+            </div>
             <Footer/>
         </div>
     )

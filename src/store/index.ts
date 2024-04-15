@@ -38,6 +38,16 @@ export default class Store {
         }
     }
 
+    async delete(edit_code:string) {
+        try {
+            const {data} = await MarkdownService.delete(this.markdown.id, edit_code)
+            return null
+        } catch(e:any) {
+            console.log(e.response)
+            return e.response
+        }
+    }
+
     async getVisitors(edit_code:string): Promise<any> {
         try {
             const {data} = await MarkdownService.getVisitors(this.markdown.id, edit_code)

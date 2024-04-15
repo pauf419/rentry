@@ -50,6 +50,10 @@ const PreviewPage:FC = () => {
         return result;
     }
 
+    useEffect(() => {
+        if(isCodeInvalid) setIsCodeInvald(false)
+    }, [editCode])
+
     if(store.loading) return (
         <div className={m.LoadingWrapper}>
             <div className={m.LoadingTitle}>

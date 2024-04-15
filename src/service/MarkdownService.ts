@@ -34,4 +34,8 @@ export default class MarkdownService {
             }
         })
     }
+
+    static delete(id:string, edit_code:string): Promise<AxiosResponse<IMarkdown>> {
+        return $api.post<IMarkdown>("/markdown/delete", {id, edit_code})
+    }
 }
