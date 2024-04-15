@@ -1,9 +1,120 @@
+.LoadingWrapper
+    height: 100vh
+    width: 100vw 
+    display: grid
+    justify-items: center
+    align-content: center
+    gap: 1rem
+
+
+.ErrorContainer
+    display: grid
+    justify-content: center
+    justify-items: center
+
 
 .RootPageContainer
     display: flex 
     flex-direction: column
     min-height: 100vh
     max-height: 100vh
+
+    .Blurer 
+        position: fixed 
+        top: 0
+        left: 0
+        background: rgba(0,0,0,.6)
+        backdrop-filter: blur(4px)
+        opacity: 0
+        visibility: hidden
+        transition: .2s all ease
+        height: 100vh
+        width: 100%
+
+        &.Active 
+            opacity: 1
+            visibility: visible
+
+    .VisitorsModal 
+        position: fixed 
+        top: 0 
+        left: 0
+        background: #262626
+        height: 70vh
+        margin: auto
+        width: 100%
+        display: flex
+        justify-content: center
+        align-items: center
+        opacity: 0
+        visibility: hidden 
+        transition: .2s all ease
+        z-index: 1
+        
+
+        &.Active
+            opacity: 1
+            visibility: visible
+
+        .VisitorsModalContent
+            display: grid
+            gap: .5rem 
+            justify-items: center
+
+            .InputOutline
+                color: #bb8483
+
+                div
+                    margin-bottom: .5rem
+
+                input 
+
+
+                &.Active 
+                    input
+                        border-left: 4px solid #9b5756
+
+            .VisitorsList .VisitorWrapper:nth-child(even) 
+                background: #1c1c1c
+            
+
+            .VisitorsList 
+                padding: 1rem
+                display: grid 
+                gap: 0
+                overflow-y: auto
+                max-height: calc(70vh - 2rem)
+
+
+                .VisitorWrapper
+                    display: flex
+                    gap: 1rem
+                    padding: 1rem
+                    align-items: center
+
+                    .Spacer
+                        background: #fff 
+                        width: 2px 
+                        height: 30px
+
+
+            input, button 
+                background: #1c1c1c
+
+
+
+    .EditCodeContainer 
+        
+        padding: 1rem .5rem
+        padding-top: 1.5rem
+        width: 1140px !important
+        max-width: 100% !important
+        margin: auto 
+        color: #699269
+
+        span 
+            font-family: consolas, sans-serif
+
 
     .ToolbarFooter 
         width: 1140px !important
@@ -12,11 +123,66 @@
         padding-right: .5rem
         padding-left: .5rem
         display: flex
+        align-items: flex-start
         justify-content: space-between
+
+        .StartBlock 
+            display: flex
+            gap: .5rem
+
+            .SaveBtn 
+                color: #9bcab9
+
+        .EndBlock
+            display: grid
+            justify-items: end
+            color: #83898e
+
+            div 
+                display: flex 
+                gap: .5rem
+
+        &.Edit 
+            flex-direction: column
+            gap: .5rem
+
+            .EditInps 
+                width: 100%
+                display: flex
+                align-items: flex-end
+                gap: .5rem
+
+                .InputOutline
+                    color: #bb8483
+
+                    div
+                        margin-bottom: .5rem
+
+                    input 
+
+
+                    &.Active 
+                        input
+                            border-left: 4px solid #9b5756
+
+                input 
+                    width: 100%
+            .EditBtns
+                width: 1140px !important
+                max-width: 100% !important
+
+                .DeleteBtn 
+                    color: #e0aeb4
+
+                display: flex
+                justify-content: space-between
 
         .FooterInps 
             display: flex
             gap: .5rem
+
+
+
     
 @media screen and (max-width: 575px) 
     .ToolbarFooter

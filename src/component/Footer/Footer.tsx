@@ -5,7 +5,7 @@ const Footer = () => {
         <div className={m.FooterWrapper}>
             <hr></hr>
             <div className={m.FooterLinks}>
-                <a href="/new">new</a>
+                <a href="/">new</a>
                 <span>.</span>
                 <a href="/what">what</a>
                 <span>.</span>
