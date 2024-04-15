@@ -5,12 +5,22 @@ module.exports = class Response {
     msg
     description
     data
+    force
 
-    constructor(model) {
-        this.status = model.status ? model.status : 500
+    constructor(model = {}) {
+        if(model.force) return this.force = model.force;
+        this.status = model.status ? model.status : 200
         this.msg = model.msg ? model.msg : null
         this.description = model.description ? model.description : null
         this.data = model.data ?model.data : null
+    }
+
+    static DEFAULT(data) {
+        return new Response({force: data})
+    }
+
+    static NotFound(msg=Responses.NotFound.msg) {
+        return new Response({...Responses.NotFound, data: null, msg})
     }
 
     static OK(data = null, msg = Responses.OK.msg) {

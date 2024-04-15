@@ -5,15 +5,13 @@ const markdownService = require("../services/markdown-service")
 class MarkdownController {
     async get(req, res, next) {
         try {
-            return console.log(
-            req.headers['x-real-ip'])
-            const {raw, edit_code} = req.query;
-            if(logic.regexobject({edit_code})) throw Response.BadRequest("Expected data not validated")
+            const {raw, id} = req.query;
+            if(logic.regexobject({id})) throw Response.BadRequest("Expected data not validated")
             
             const res = await markdownService.get(
-                edit_code, 
+                id, 
                 raw==="true" ? true : false,
-                req.headers['x-forwarded-for'] || req.socket.remoteAddress  
+                String(req.headers['x-forwarded-for'] || req.socket.remoteAddress).replace("::ffff:", "")
             )
             return next(res)
         } catch (e) { 
@@ -22,18 +20,52 @@ class MarkdownController {
         }
     }
 
-    async upload(req, res, next) {
+    async edit(req, res, next) {
         try {
-            const {data} = req.body;
-            if(logic.regexobject({data})) throw Response.BadRequest("Expected data not validated")
-            const res = await markdownService.upload(
-                data, 
-                req.socket.remoteAddress, 
+            const {data, edit_code, id, new_edit_code} = req.body;
+            if(logic.regexobject({data, edit_code, id})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.edit(
+                id, 
+                edit_code,
+                data,
+                new_edit_code
             )
             return next(res)
         } catch (e) {  
             console.error(e)
             return next(e) 
+        } 
+    }
+
+    async upload(req, res, next) {
+        try {
+            const {data, custom_edit_code} = req.body;
+            if(logic.regexobject({data})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.upload(
+                data, 
+                req.socket.remoteAddress, 
+                custom_edit_code
+            )
+            return next(res)
+        } catch (e) {  
+            console.error(e)
+            return next(e) 
+        }
+    }
+
+    async get_visitors(req, res, next) {
+        try { 
+
+            const {id, edit_code} = req.query 
+            if(logic.regexobject({id, edit_code})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.get_visitors(
+                id, 
+                edit_code
+            )
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
         }
     }
 }

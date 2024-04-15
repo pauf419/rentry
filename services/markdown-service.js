@@ -4,18 +4,17 @@ const Response = require("../responses/response")
 const logic = require("../utils/logic")
 const randomId = require("random-id")
 const {SuperfaceClient} = require("@superfaceai/one-sdk")
+const MarkdownDto = require("../dtos/markdown-dto")
+const MarkdownDtoUnlocked = require("../dtos/markdown-dto-unlocked")
 
 class MarkdownService {
 
-    async run(ip) {
-
-        console.log(ip)
+    async getContry(ip) {
         
         const sdk = new SuperfaceClient();
-        // Load the profile
+
         const profile = await sdk.getProfile("address/ip-geolocation@1.0.1");
       
-        // Use the profile
         const result = await profile.getUseCase("IpGeolocation").perform(
           {
             ipAddress: ip
@@ -30,29 +29,63 @@ class MarkdownService {
           }
         );       
       
-        // Handle the result
         try {
-          const data = result.unwrap();
-          console.log("\n DATA: "+ data)
+          return result.unwrap()
         } catch (error) {
+            return "Undefined"
         }
       }
+     
+
+    async get(id, raw, ip) {
+
+        //var {addressCountry} = await this.getContry("125.21.115.39");
+
+        var addressCountry = "Italy"
+
+        const visitor = await pool.query("SELECT * FROM visitor WHERE refer = $1 AND ip = $2", [id, ip]).then(data => data.rows[0])
+        if(!visitor) await pool.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES($1, $2, $3, $4, $5)", [ip, Date.now(), addressCountry, id, v4()])
+
+        const markdown = await pool.query("SELECT * FROM markdown WHERE id = $1", [id]).then(data => data.rows[0])
+        console.log(id, markdown)
+        if(!markdown) return Response.NotFound("Could not find markdown with the same id(or edit code invalid).")
+
+        const visitors = await pool.query("SELECT * FROM visitor WHERe refer = $1", [id]).then(data => data.rows)
+
+        if(raw) return Response.DEFAULT(markdown.data)
+        return Response.OK(new MarkdownDto({
+            ...markdown, 
+            visitors: visitors.length
+        }))
     
-
-    async get(edit_code, raw, ip) {
-
-        var geo = await this.run(ip);
-
-        console.log(geo)
-
-        await pool.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES($1, $2, $3, $4, $5)", [ip, Date.now(), ])
-
     }
 
-    async upload(data, owner) {
-        const markdown = await pool.query("INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", [v4(), randomId(12, "aA0"), data, Date.now(), owner]).then(data => data.rows[0])
-        return Response.OK(markdown)
-    }   
+    async edit(id, edit_code, data, new_edit_code) {
+      const markdown_exists = await pool.query("SELECT * FROM markdown WHERE id = $1 AND edit_code = $2", [id, edit_code]).then(data => data.rows[0]) 
+      if(!markdown_exists) return Response.Unauthorized("Invalid edit code.") 
+      if(!new_edit_code) new_edit_code = edit_code
+      const markdown = await pool.query("UPDATE markdown SET data = $1, edit_code = $2 WHERE id = $3 RETURNING *", [data, new_edit_code, id]).then(data => data.rows[0])
+      return Response.OK(new MarkdownDtoUnlocked({
+        ...markdown,
+      }))
+    }
+
+    async upload(data, owner, custom_edit_code) {
+      const edit_code = custom_edit_code ? custom_edit_code : randomId(12, "aA0")
+        const markdown = await pool.query("INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", [v4(), edit_code, data, Date.now(), owner]).then(data => data.rows[0])
+        return Response.OK(new MarkdownDtoUnlocked({
+          ...markdown,
+        }))
+    }  
+    
+    async get_visitors(id, edit_code) {
+      const exists = await pool.query("SELECT * FROM markdown WHERE id = $1 AND edit_code = $2", [id, edit_code]).then(data => data.rows[0])
+      if(!exists) return Response.NotFound("Could not find markdown with the same id(or edit code invalid)")
+      const visitors = await pool.query("SELECT * FROM visitor WHERE refer = $1", [id]).then(data => data.rows)
+      return Response.OK({
+        visitors 
+      })
+    }
 
 }
 

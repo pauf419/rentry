@@ -1,4 +1,7 @@
 module.exports = Object.freeze({
+    DATA: {
+        
+    },
     //2XX
     OK: {
         status: 200, 
@@ -25,6 +28,11 @@ module.exports = Object.freeze({
         status: 403,
         msg: "Forbidden",
         description: "The server understood the request, but is refusing to fulfill it"
+    },
+    NotFound: {
+        status: 404,
+        msg: "Not Found",
+        description: ""
     },
     //5XX
     InternalServerError: {
