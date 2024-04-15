@@ -41,7 +41,7 @@ class MarkdownService {
 
         //var {addressCountry} = await this.getContry("125.21.115.39");
 
-        var addressCountry = "Italy"
+        var {addressCountry} = await this.getContry(ip);
 
         const visitor = await pool.query("SELECT * FROM visitor WHERE refer = $1 AND ip = $2", [id, ip]).then(data => data.rows[0])
         if(!visitor) await pool.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES($1, $2, $3, $4, $5)", [ip, Date.now(), addressCountry, id, v4()])
