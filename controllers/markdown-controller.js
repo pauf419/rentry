@@ -68,6 +68,22 @@ class MarkdownController {
             return next(e)
         }
     }
+
+    async delete(req, res, next) {
+        try { 
+
+            const {id, edit_code} = req.body
+            if(logic.regexobject({id, edit_code})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.delete(
+                id, 
+                edit_code
+            )
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
+        } 
+    }
 }
 
 module.exports = new MarkdownController()

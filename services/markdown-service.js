@@ -77,6 +77,15 @@ class MarkdownService {
           ...markdown,
         }))
     }  
+
+    async delete(id, edit_code) {
+      const exists = await pool.query("SELECT * FROM markdown WHERE id = $1 AND edit_code = $2", [id, edit_code]).then(data => data.rows[0])
+      if(!exists) return Response.NotFound("Could not find markdown with the same id(or edit code invalid)")
+      const data = await pool.query("DELETE FROM markdown WHERE id = $1 AND edit_code = $2 RETURNING *", [id, edit_code]).then(data => data.rows)
+      return Response.OK({
+        data
+      })
+    }
     
     async get_visitors(id, edit_code) {
       const exists = await pool.query("SELECT * FROM markdown WHERE id = $1 AND edit_code = $2", [id, edit_code]).then(data => data.rows[0])
