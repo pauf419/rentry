@@ -69,6 +69,24 @@ class MarkdownController {
         }
     }
 
+    async get_raw(req, res, next) {
+        try { 
+
+            const {id} = req.params
+            if(logic.regexobject({id})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.get( 
+                id, 
+                true,
+                String(req.headers['x-forwarded-for'] || req.socket.remoteAddress).replace("::ffff:", "")
+            )
+            console.log(res)
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
+        }   
+    }
+
     async delete(req, res, next) {
         try { 
 

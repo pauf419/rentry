@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const router = require('./router/index')
 const path = require("path")
 const resValidator = require("./middlewares/validator.middleware")
+const markdownController = require("./controllers/markdown-controller")
 
 const PORT = process.env.PORT || 5000;
 const app = express()
@@ -17,7 +18,9 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }));
 app.use('/api', router);
+app.get("/:id/raw", markdownController.get_raw)
 app.use(resValidator) 
+
 
 if(process.env.NODE_ENV === 'prod') {
     app.use('/', express.static(path.join(__dirname, '..', 'client', 'build')))

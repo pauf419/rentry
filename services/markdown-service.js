@@ -41,17 +41,17 @@ class MarkdownService {
 
         //var {addressCountry} = await this.getContry("125.21.115.39");
 
-        var {addressCountry} = await this.getContry(ip);
+        var addressCountry = "Italy"
 
         const visitor = await pool.query("SELECT * FROM visitor WHERE refer = $1 AND ip = $2", [id, ip]).then(data => data.rows[0])
         if(!visitor) await pool.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES($1, $2, $3, $4, $5)", [ip, Date.now(), addressCountry, id, v4()])
 
         const markdown = await pool.query("SELECT * FROM markdown WHERE id = $1", [id]).then(data => data.rows[0])
-        console.log(id, markdown)
+
         if(!markdown) return Response.NotFound("Could not find markdown with the same id(or edit code invalid).")
 
         const visitors = await pool.query("SELECT * FROM visitor WHERe refer = $1", [id]).then(data => data.rows)
-
+        console.log("Markdown service: " + markdown.data)
         if(raw) return Response.DEFAULT(markdown.data)
         return Response.OK(new MarkdownDto({
             ...markdown, 
