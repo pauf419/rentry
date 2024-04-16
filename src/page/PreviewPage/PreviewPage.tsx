@@ -10,6 +10,7 @@ import { ctx } from "../..";
 import { AxiosError } from "axios";
 import IVisitor from "../../interface/IVisitor";
 import { Visitor } from "typescript";
+import Dropdown from "../../component/Dropdown/Dropdown";
 
 
 const PreviewPage:FC = () => {
@@ -144,8 +145,8 @@ const PreviewPage:FC = () => {
                     <button className={`${m.GoBtn}`} onClick={() => window.location.href="/"}>
                         New
                     </button>
-                    <button className={`${m.GoBotn}`} onClick={() => setVisitorsModalActive(true)}>visitors</button>
-
+                    <button className={`${m.GoBotn}`} onClick={() => setVisitorsModalActive(true)}>Visitors</button>
+                    <Dropdown onClick={() => window.location.href = "/" + id + "/raw"}/> 
                 </div>
                 
                 <div className={m.EndBlock}>

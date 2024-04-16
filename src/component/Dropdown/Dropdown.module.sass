@@ -1,0 +1,20 @@
+
+.DropdownContainer 
+    display: grid 
+    position: relative 
+
+    &.Active
+        &:hover 
+            background: #262626
+        .DropdownContent
+            display: flex
+    
+
+    .DropdownContent 
+        display: none 
+        position: absolute 
+        bottom: -100%
+
+        .DropdownBtn 
+            &:hover
+                color: #007bff
