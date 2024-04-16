@@ -39,9 +39,7 @@ class MarkdownService {
 
     async get(id, raw, ip) {
 
-        //var {addressCountry} = await this.getContry("125.21.115.39");
-
-        var addressCountry = "Italy"
+        var {addressCountry} = await this.getContry(ip);
 
         const visitor = await pool.query("SELECT * FROM visitor WHERE refer = $1 AND ip = $2", [id, ip]).then(data => data.rows[0])
         if(!visitor) await pool.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES($1, $2, $3, $4, $5)", [ip, Date.now(), addressCountry, id, v4()])
@@ -72,7 +70,7 @@ class MarkdownService {
 
     async upload(data, owner, custom_edit_code) {
       const edit_code = custom_edit_code ? custom_edit_code : randomId(12, "aA0")
-        const markdown = await pool.query("INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", [v4(), edit_code, data, Date.now(), owner]).then(data => data.rows[0])
+        const markdown = await pool.query("INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES($1, $2, $3, $4, $5) RETURNING *", [randomId(8, "aA0"), edit_code, data, Date.now(), owner]).then(data => data.rows[0])
         return Response.OK(new MarkdownDtoUnlocked({
           ...markdown,
         }))
