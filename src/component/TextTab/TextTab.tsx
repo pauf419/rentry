@@ -12,6 +12,9 @@ const TextTab = () => {
 
     const [value, setValue] = React.useState<string>("SDSDS")
 
+    useEffect(() => {
+        console.log(store.text)
+    }, [store.text])
 
     return (
         <div className={m.TextTabWrapper}>
