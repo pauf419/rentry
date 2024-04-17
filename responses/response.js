@@ -9,7 +9,6 @@ module.exports = class Response {
 
     constructor(model = {}) {
         if(model.force) {
-            console.log("REsponse.js: " + model.data)
             this.status = model.status 
             this.data = model.data 
             this.force = true

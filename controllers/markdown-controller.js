@@ -79,7 +79,6 @@ class MarkdownController {
                 true,
                 String(req.headers['x-forwarded-for'] || req.socket.remoteAddress).replace("::ffff:", "")
             )
-            console.log(res)
             return next(res)
         } catch(e) {
             console.error(e) 

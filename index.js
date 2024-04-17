@@ -30,11 +30,8 @@ if(process.env.NODE_ENV === 'prod') {
     })
 }
  
- 
-
 const start = async () => {
     try {
-        
         app.listen(PORT, () => console.log(`Server started on PORT = ${PORT}`))
     } catch (e) {
         console.log(e);

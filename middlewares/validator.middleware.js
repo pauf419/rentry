@@ -1,7 +1,6 @@
 const Response = require("../responses/response")
 
 module.exports = function(data, _, res, _) {
-    console.log("Validator middlware: ")
     if(data instanceof Response) {
         if(data.force) {
             res.set('Content-Type', 'text/plain; charset=utf-8')
