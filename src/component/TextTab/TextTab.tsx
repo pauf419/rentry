@@ -10,12 +10,6 @@ import Markdown from "react-markdown";
 const TextTab = () => {
     const { store } = useContext(ctx);
 
-    const [value, setValue] = React.useState<string>("SDSDS")
-
-    useEffect(() => {
-        console.log(store.text)
-    }, [store.text])
-
     return (
         <div className={m.TextTabWrapper}>
             <MDEditor
