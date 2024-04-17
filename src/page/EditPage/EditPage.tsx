@@ -57,10 +57,10 @@ const EditPage:FC = () => {
     if(store.loading || !store.markdown) return (
         <div className={m.LoadingWrapper}>
             <div className={m.LoadingTitle}>
-                <h1>YourApp</h1>
+                <h1>Paste29</h1>
             </div>
             <div className={m.LoadingContent}>
-                Loading...
+                Is Loading...
             </div>
         </div>
     )

@@ -16,7 +16,7 @@ const Footer = () => {
                 <a href="/what#contacts">contacts</a>
             </div>
             <div className={m.FooterCredits}>
-                <span>YourApp - Markdown Paste Service </span>
+                <span>Paste29 - Markdown Paste Service </span>
             </div>
         </div>
     )
