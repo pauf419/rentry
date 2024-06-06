@@ -4,16 +4,21 @@ const randomId = require("random-id")
 const MarkdownDto = require("../dtos/markdown-dto")
 const MarkdownDtoUnlocked = require("../dtos/markdown-dto-unlocked")
 const DB = require("../utils/db_query")
-const geoService = require("./geo-service")
+const geoService = require("./geo-service") 
 const bcrypt = require('bcrypt');
+const cron = require('node-cron');
 
 class MarkdownService {
     async get(id, raw, ip) {
 
-      var {addressCountry} = await geoService.getGeoStats(ip);
+      var {country} = await geoService.getGeoStats(ip);
 
       const visitor = await DB.query("SELECT * FROM visitor WHERE refer = ? AND ip = ?", [id, ip], true)
-      if(!visitor) await DB.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES(?, ?, ?, ?, ?)", [ip, Date.now(), addressCountry, id, v4()])
+      if(!visitor && raw) await DB.query("INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES(?, ?, ?, ?, ?, ?)", [ip, Date.now(), country, id, v4(), Date.now()])
+      if(raw) await DB.query("UPDATE visitor SET timestamp_last = ? WHERE refer = ? AND ip = ?", [Date.now(), id, ip])
+
+      //await DB.query("INSERT INTO visit(id, timestamp, refer, markdown) VALUES(?, ?, ?, ?)", [v4(), Date.now(), ip, id])
+      //await DB.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES(?, ?, ?, ?, ?)", [ip, now, country, id, v4()])
 
       const markdown = await DB.query("SELECT * FROM markdown WHERE id = ?", [id], true)
 
@@ -62,15 +67,50 @@ class MarkdownService {
       })
     }
     
-    async get_visitors(id, edit_code) {
+    async get_visitors(id, edit_code, extended, offset, limit) {
       const exists = await DB.query("SELECT * FROM markdown WHERE id = ?", [id], true)
       if(!exists) return Response.NotFound("Could not find markdown with the same id")
       const equal = await bcrypt.compare(edit_code, exists.edit_code)
       if(!equal) return Response.Unauthorized("Invalid edit code")
-      const visitors = await DB.query("SELECT * FROM visitor WHERE refer = ?", [id])
+      var visitors = await DB.query("SELECT * FROM visitor WHERE refer = ? ORDER BY timestamp DESC LIMIT ?, ?", [id, offset, limit])
+      if(extended) for(var i=0;i < visitors.length;i++) {
+        visitors[i].timestamp = visitors[i].timestamp_last
+      }
       return Response.OK({  
         visitors 
       })
+    }
+
+    async get_visitors_count(id, edit_code) {
+      const exists = await DB.query("SELECT * FROM markdown WHERE id = ?", [id], true)
+      if(!exists) return Response.NotFound("Could not find markdown with the same id")
+      const equal = await bcrypt.compare(edit_code, exists.edit_code)
+      if(!equal) return Response.Unauthorized("Invalid edit code")
+      var visitors = await DB.query("SELECT * FROM visitor WHERE refer = ?", [id])
+      return Response.OK({  
+        visitors: visitors.length
+      })
+    }
+
+    async get_visitor_stats(id, edit_code, ip) {
+      const exists = await DB.query("SELECT * FROM markdown WHERE id = ?", [id], true)
+      if(!exists) return Response.NotFound("Could not find markdown with the same id")
+      const equal = await bcrypt.compare(edit_code, exists.edit_code)
+      if(!equal) return Response.Unauthorized("Invalid edit code")
+      const visits = await DB.query("SELECT * FROM visit WHERE markdown = ? AND refer = ?", [id, ip])
+      return Response.OK({  
+        visits
+      })
+    }
+
+    async cron(min) {
+      const rows = await DB.query("UPDATE cron SET min = ? WHERE base = 'root' RETURNING *", [min])
+      return Response.OK(rows[0])
+    }
+
+    async get_cron() {
+      const rows = await DB.query("SELECT * FROM cron WHERE base = 'root'")
+      return Response.OK(rows[0])
     }
 }
 

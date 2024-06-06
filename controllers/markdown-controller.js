@@ -8,6 +8,11 @@ class MarkdownController {
             const {raw, id} = req.query;
             if(logic.regexobject({id})) throw Response.BadRequest("Expected data not validated")
             
+            /*const res = await markdownService.get(
+                id, 
+                raw==="true" ? true : false,
+                String(req.headers['x-forwarded-for'] || req.socket.remoteAddress).replace("::ffff:", "")
+            )*/
             const res = await markdownService.get(
                 id, 
                 raw==="true" ? true : false,
@@ -56,9 +61,53 @@ class MarkdownController {
     async get_visitors(req, res, next) {
         try { 
 
+            const {id, edit_code, extended, offset, limit} = req.query 
+            if(logic.regexobject({id, edit_code, offset, limit})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.get_visitors(
+                id, 
+                edit_code, 
+                extended === "true" ? true : false,
+                offset, 
+                limit
+            )
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
+        }
+    }
+
+    async cron(req, res, next) {
+        try { 
+
+            const {min} = req.body 
+            if(logic.regexobject({min})) throw Response.BadRequest("Expected data not validated")
+            const res = await markdownService.cron(
+                min
+            )
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
+        }
+    }
+
+    async get_cron(req, res, next) {
+        try { 
+            const res = await markdownService.get_cron()
+            return next(res)
+        } catch(e) {
+            console.error(e) 
+            return next(e)
+        }
+    }
+
+    async get_visitors_count(req, res, next) {
+        try { 
+
             const {id, edit_code} = req.query 
             if(logic.regexobject({id, edit_code})) throw Response.BadRequest("Expected data not validated")
-            const res = await markdownService.get_visitors(
+            const res = await markdownService.get_visitors_count(
                 id, 
                 edit_code
             )
