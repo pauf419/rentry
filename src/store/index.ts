@@ -48,9 +48,39 @@ export default class Store {
         }
     }
 
-    async getVisitors(edit_code:string): Promise<any> {
+    async getVisitorsCount(edit_code:string) {
         try {
-            const {data} = await MarkdownService.getVisitors(this.markdown.id, edit_code)
+            const {data} = await MarkdownService.getVisitorsCount(this.markdown.id, edit_code)
+            return data
+        } catch(e) {
+            console.error(e)
+            return e as any;
+        }
+    }
+
+    async cron(access_code:string, min:number) {
+        try {
+            const {data} = await MarkdownService.cron(access_code, min)
+            return data  
+        } catch(e) {
+            console.error(e) 
+            return e as any
+        }
+    }
+
+    async getCron(access_code:string) {
+        try {
+            const {data} = await MarkdownService.getCron(access_code)
+            return data
+        } catch(e) {
+            console.error(e) 
+            return e as any
+        }
+    }
+
+    async getVisitors(edit_code:string, extended:any = null, offset:number=0, limit:number=50): Promise<any> {
+        try {
+            const {data} = await MarkdownService.getVisitors(this.markdown.id, edit_code, extended, offset, limit)
             return data
         } catch(e) {
             console.error(e)

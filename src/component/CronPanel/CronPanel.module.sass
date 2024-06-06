@@ -1,0 +1,77 @@
+
+.CronPanelWrapper
+    display: flex
+    flex: 1
+    height: 100%
+    background: #262626
+
+    .CronPanelContent
+        width: 100%
+        display: grid
+        gap: 1rem
+        align-items: center
+        align-content: center
+        justify-items: center
+
+.StatusBox 
+    .SuccessBox
+        color: #699269
+
+.BtnBox
+    display: flex 
+    gap: .5rem
+
+.VolumeBox
+    font-size: 19px
+    font-style: italic
+
+.VolumeSlider
+    width: 250px
+    height: 10px
+    background: #ddd
+    border-radius: 5px
+    outline: none
+    -webkit-appearance: none
+    appearance: none
+    transition: .2s all ease
+
+    &::-webkit-slider-thumb 
+        transition: .2s all ease
+        width: 10px
+        height: 20px
+        background: #4b99d1
+        border-radius: 100px
+        cursor: pointer
+        -webkit-appearance: none
+        appearance: none
+    
+
+    &::-moz-range-thumb 
+      width: 20px
+      height: 20px
+      background: #007bff
+      border-radius: 50%
+      cursor: pointer
+  
+
+
+
+
+.AuthWrapper
+    flex: 1
+    display: grid
+    gap: .5rem
+    justify-items: center
+    align-content: center
+    .InputOutline
+        color: #bb8483
+
+        div
+            margin-bottom: .5rem
+
+        input 
+
+
+        &.Active 
+            input
+                border-left: 4px solid #9b5756
