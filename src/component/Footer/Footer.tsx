@@ -6,14 +6,6 @@ const Footer = () => {
             <hr></hr>
             <div className={m.FooterLinks}>
                 <a href="/">new</a>
-                <span>.</span>
-                <a href="/what">what</a>
-                <span>.</span>
-                <a href="/how">how</a>
-                <span>.</span>
-                <a href="/langs">langs</a>
-                <span>.</span>
-                <a href="/what#contacts">contacts</a>
             </div>
             <div className={m.FooterCredits}>
                 <span>Paste29 - Markdown Paste Service </span>

@@ -12,13 +12,18 @@ interface IVisitorExtendedProps {
 
 const VisitorExtended: FC<IVisitorExtendedProps> = ({visitor, index}) => { 
 
-    const formatted_date = (mill:number) => {
-        var result="";
-        var d = new Date(mill);
-        result += d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate() + 
-                    " "+ d.getHours()+":"+d.getMinutes()+":"+
-                    d.getSeconds()
-        return result;
+    const formatted_date = (mill: number) => {
+        const padZero = (num: number) => (num < 10 ? '0' : '') + num;
+    
+        const d = new Date(mill);
+        const year = d.getFullYear();
+        const month = padZero(d.getMonth() + 1);
+        const date = padZero(d.getDate());
+        const hours = padZero(d.getHours());
+        const minutes = padZero(d.getMinutes());
+        const seconds = padZero(d.getSeconds());
+    
+        return `${year}/${month}/${date} ${hours}:${minutes}:${seconds}`;
     }
 
     return ( 
