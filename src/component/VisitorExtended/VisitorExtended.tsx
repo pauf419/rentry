@@ -23,7 +23,7 @@ const VisitorExtended: FC<IVisitorExtendedProps> = ({visitor, index}) => {
         const minutes = padZero(d.getMinutes());
         const seconds = padZero(d.getSeconds());
     
-        return `${year}/${month}/${date} ${hours}:${minutes}:${seconds}`;
+        return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     }
 
     return ( 
