@@ -21,6 +21,7 @@
     "geoip-country": "^4.2.88",
     "geoip-lite": "^1.4.10",
     "node-cron": "^3.0.3",
+    "node-gyp": "^11.0.0",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "random-id": "^1.0.4",

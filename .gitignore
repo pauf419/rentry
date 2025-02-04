@@ -1,5 +1,6 @@
 /node_modules
 .dev.env
+.prod.env
 .root.db
 root.db
 /root.db
