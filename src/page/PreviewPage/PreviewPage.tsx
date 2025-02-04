@@ -206,6 +206,7 @@ const PreviewPage:FC = () => {
                     </button>
                     <button className={`${m.GoBotn}`} onClick={() => setVisitorsModalActive(true)}>Visitors</button>
                     <button className={`${m.GoBotn}`} onClick={() => window.location.href="/"+id+"/stats"}>Stats</button>
+                    <button className={`${m.GoBotn}`} onClick={() => window.location.href="/"+id+"/count"}>Last activity</button>
                     <Dropdown onClick={() => window.location.href = "/" + id + "/raw"}/> 
                 </div>
                 
