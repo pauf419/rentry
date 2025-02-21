@@ -21,7 +21,14 @@ class MarkdownService {
         "Could not find markdown with the same id(or edit code invalid)."
       );
 
-    var { country } = await geoService.getGeoStats(ip);
+    try {
+      var { country } = await geoService.getGeoStats(ip);
+    } catch (e) {
+      console.error("------ Handled error with ip ------");
+      console.error(e);
+    }
+
+    if (!country) country = "USA";
 
     const visitor = await DB.query(
       "SELECT * FROM visitor WHERE refer = ? AND ip = ?",
