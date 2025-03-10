@@ -21,14 +21,14 @@ class MarkdownService {
         "Could not find markdown with the same id(or edit code invalid)."
       );
 
-    try {
+    /*try {
       var { country } = await geoService.getGeoStats(ip);
     } catch (e) {
       console.error("------ Handled error with ip ------");
       console.error(e);
     }
 
-    if (!country) country = "USA";
+    if (!country) country = "USA";*/
 
     const visitor = await DB.query(
       "SELECT * FROM visitor WHERE refer = ? AND ip = ?",
@@ -41,11 +41,16 @@ class MarkdownService {
       true
     );
     if (raw) {
-      if (!visitor)
-        await DB.query(
+      if (!visitor) {
+        /*await DB.query(
           "INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES(?, ?, ?, ?, ?, ?)",
           [ip, Date.now(), country, id, v4(), Date.now()]
+        );*/
+        await DB.query(
+          "INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES(?, ?, ?, ?, ?, ?)",
+          [ip, Date.now(), "USA", id, v4(), Date.now()]
         );
+      }
       if (!visitor_dynamic)
         await DB.query(
           "INSERT INTO visitor_dynamic(ip, timestamp, refer, id) VALUES(?, ?, ?, ?)",
