@@ -32,10 +32,8 @@ const createCronTask = (cronInterval) => {
   if (task) task.stop();
 
   task = cron.schedule(cronInterval, async () => {
-    const rows = await DB.query("SELECT min FROM cron WHERE base = 'root'");
-    const interval = rows[0].min;
     const now = Date.now();
-    var conc = new Date(now - interval).getTime();
+    var conc = new Date(now - 10 * 24 * 60 * 60 * 1000).getTime();
     await DB.query(`DELETE FROM visitor WHERE timestamp_last <= ?`, [conc]);
     conc = new Date(now - 100 * 60 * 1000);
     await DB.query(`DELETE FROM visitor_dynamic WHERE timestamp <= ?`, [conc]);

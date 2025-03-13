@@ -7,6 +7,7 @@ const DB = require("../utils/db_query");
 const geoService = require("./geo-service");
 const bcrypt = require("bcrypt");
 const cron = require("node-cron");
+const pool = require("../db/postgress-pool");
 
 class MarkdownService {
   async get(id, raw, ip) {
@@ -191,10 +192,7 @@ class MarkdownService {
       return Response.NotFound("Could not find markdown with the same id");
     const equal = await bcrypt.compare(edit_code, exists.edit_code);
     if (!equal) return Response.Unauthorized("Invalid edit code");
-    var visitors = await DB.query(
-      "SELECT * FROM visitor_dynamic WHERE refer = ?",
-      [id]
-    );
+    var visitors = await DB.query("SELECT * FROM visitor_dynamic");
 
     return Response.OK({
       visitors: visitors.length,
