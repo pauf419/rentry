@@ -12,19 +12,7 @@ const TextTab = () => {
 
     return (
         <div className={m.TextTabWrapper}>
-            <MDEditor
-                value={store.text}
-                onChange={(e) => store.setText(e!) as any}
-                preview="edit"
-                height="100%"
-                style={{
-                    background: "transparent",
-                    borderRadius: "0",
-                }}
-                textareaProps={{
-                    placeholder: 'Please enter Markdown text',
-                }}
-            />
+            <textarea onChange={(e) => store.setText(e.target.value)} value={store.text}></textarea>
         </div>
     );
 }

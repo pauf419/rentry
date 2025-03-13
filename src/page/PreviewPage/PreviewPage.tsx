@@ -42,7 +42,7 @@ const PreviewPage:FC = () => {
     const getVisitors = async (_offset:number=offset) => {
         const count_resp = await store.getVisitorsCount(editCode)
         if(count_resp instanceof AxiosError) return setIsCodeInvald(true)
-        const resp = await store.getVisitors(editCode, false, _offset, 50)
+        const resp = await store.getVisitors(editCode, true, _offset, 50)
         if(resp instanceof AxiosError) return setIsCodeInvald(true)
         setPagesAvailable(Math.ceil(count_resp.data.visitors/50))
         setIsAuthorized(true)
@@ -204,8 +204,6 @@ const PreviewPage:FC = () => {
                     <button className={`${m.GoBtn}`} onClick={() => window.location.href="/"}>
                         New
                     </button>
-                    <button className={`${m.GoBotn}`} onClick={() => setVisitorsModalActive(true)}>Visitors</button>
-                    <button className={`${m.GoBotn}`} onClick={() => window.location.href="/"+id+"/stats"}>Stats</button>
                     <button className={`${m.GoBotn}`} onClick={() => window.location.href="/"+id+"/count"}>Last activity</button>
                     <Dropdown onClick={() => window.location.href = "/" + id + "/raw"}/> 
                 </div>

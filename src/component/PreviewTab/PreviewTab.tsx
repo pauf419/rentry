@@ -7,8 +7,11 @@ import m from "./PreviewTab.module.sass";
 const PreviewTab = () => {
     const { store } = useContext(ctx)
     return (
-        <MDEditor.Markdown className={m.text} source={store.text} style={{ background: "transparent", color: "#bdc0c2", whiteSpace: "pre-wrap"}} />
-
+        <div className={m.PreviewTabWrapper}>
+            <textarea readOnly className={m.PreviewText} value={store.text}>
+            </textarea>
+        </div>
+        
     )
 }
 
