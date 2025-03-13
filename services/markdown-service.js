@@ -7,12 +7,11 @@ const DB = require("../utils/db_query");
 const geoService = require("./geo-service");
 const bcrypt = require("bcrypt");
 const cron = require("node-cron");
-const pool = require("../db/postgress-pool");
 
 class MarkdownService {
   async get(id, raw, ip) {
     const markdown = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -22,54 +21,39 @@ class MarkdownService {
         "Could not find markdown with the same id(or edit code invalid)."
       );
 
-    /*try {
-      var { country } = await geoService.getGeoStats(ip);
-    } catch (e) {
-      console.error("------ Handled error with ip ------");
-      console.error(e);
-    }
-
-    if (!country) country = "USA";*/
-
     const visitor = await DB.query(
-      "SELECT * FROM visitor WHERE refer = ? AND ip = ?",
+      "SELECT * FROM visitor WHERE refer = $1 AND ip = $2",
       [id, ip],
       true
     );
     const visitor_dynamic = await DB.query(
-      "SELECT * FROM visitor_dynamic WHERE refer = ? AND ip = ?",
+      "SELECT * FROM visitor_dynamic WHERE refer = $1 AND ip = $2",
       [id, ip],
       true
     );
     if (raw) {
       if (!visitor) {
-        /*await DB.query(
-          "INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES(?, ?, ?, ?, ?, ?)",
-          [ip, Date.now(), country, id, v4(), Date.now()]
-        );*/
         await DB.query(
-          "INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES(?, ?, ?, ?, ?, ?)",
+          "INSERT INTO visitor(ip, timestamp, country, refer, id, timestamp_last) VALUES($1, $2, $3, $4, $5, $6)",
           [ip, Date.now(), "USA", id, v4(), Date.now()]
         );
       }
       if (!visitor_dynamic)
         await DB.query(
-          "INSERT INTO visitor_dynamic(ip, timestamp, refer, id) VALUES(?, ?, ?, ?)",
+          "INSERT INTO visitor_dynamic(ip, timestamp, refer, id) VALUES($1, $2, $3, $4)",
           [ip, Date.now(), id, v4()]
         );
       await DB.query(
-        "UPDATE visitor SET timestamp_last = ? WHERE refer = ? AND ip = ?",
+        "UPDATE visitor SET timestamp_last = $1 WHERE refer = $2 AND ip = $3",
         [Date.now(), id, ip]
       );
       await DB.query(
-        "UPDATE visitor_dynamic SET timestamp = ? WHERE refer = ? AND ip = ?",
+        "UPDATE visitor_dynamic SET timestamp = $1 WHERE refer = $2 AND ip = $3",
         [Date.now(), id, ip]
       );
     }
-    //await DB.query("INSERT INTO visit(id, timestamp, refer, markdown) VALUES(?, ?, ?, ?)", [v4(), Date.now(), ip, id])
-    //await DB.query("INSERT INTO visitor(ip, timestamp, country, refer, id) VALUES(?, ?, ?, ?, ?)", [ip, now, country, id, v4()])
 
-    const visitors = await DB.query("SELECT * FROM visitor WHERE refer = ?", [
+    const visitors = await DB.query("SELECT * FROM visitor WHERE refer = $1", [
       id,
     ]);
 
@@ -84,7 +68,7 @@ class MarkdownService {
 
   async edit(id, edit_code, data, new_edit_code) {
     const markdown_exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -94,7 +78,7 @@ class MarkdownService {
     if (!new_edit_code) new_edit_code = edit_code;
     const hash_code = await bcrypt.hash(new_edit_code, 3);
     const markdown = await DB.query(
-      "UPDATE markdown SET data = ?, edit_code = ? WHERE id = ? RETURNING *",
+      "UPDATE markdown SET data = $1, edit_code = $2 WHERE id = $3 RETURNING *",
       [data, hash_code, id],
       true
     );
@@ -110,7 +94,7 @@ class MarkdownService {
     const edit_code = custom_edit_code ? custom_edit_code : randomId(12, "aA0");
     const hash_code = await bcrypt.hash(edit_code, 3);
     const markdown = await DB.query(
-      "INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES(?, ?, ?, ?, ?) RETURNING *",
+      "INSERT INTO markdown(id, edit_code, data, timestamp, owner) VALUES($1, $2, $3, $4, $5) RETURNING *",
       [randomId(8, "aA0"), hash_code, data, Date.now(), owner],
       true
     );
@@ -124,7 +108,7 @@ class MarkdownService {
 
   async delete(id, edit_code) {
     const exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ? AND edit_code = ?",
+      "SELECT * FROM markdown WHERE id = $1 AND edit_code = $2",
       [id, edit_code],
       true
     );
@@ -133,7 +117,7 @@ class MarkdownService {
         "Could not find markdown with the same id(or edit code invalid)"
       );
     const data = await DB.query(
-      "DELETE FROM markdown WHERE id = ? AND edit_code = ? RETURNING *",
+      "DELETE FROM markdown WHERE id = $1 AND edit_code = $2 RETURNING *",
       [id, edit_code]
     );
     return Response.OK({
@@ -143,7 +127,7 @@ class MarkdownService {
 
   async get_visitors(id, edit_code, extended, offset, limit) {
     const exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -152,7 +136,7 @@ class MarkdownService {
     const equal = await bcrypt.compare(edit_code, exists.edit_code);
     if (!equal) return Response.Unauthorized("Invalid edit code");
     var visitors = await DB.query(
-      "SELECT * FROM visitor WHERE refer = ? ORDER BY timestamp DESC LIMIT ?, ?",
+      "SELECT * FROM visitor WHERE refer = $1 ORDER BY timestamp DESC LIMIT $2, $3",
       [id, offset, limit]
     );
     if (extended)
@@ -166,7 +150,7 @@ class MarkdownService {
 
   async get_visitors_count(id, edit_code) {
     const exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -174,7 +158,7 @@ class MarkdownService {
       return Response.NotFound("Could not find markdown with the same id");
     const equal = await bcrypt.compare(edit_code, exists.edit_code);
     if (!equal) return Response.Unauthorized("Invalid edit code");
-    var visitors = await DB.query("SELECT * FROM visitor WHERE refer = ?", [
+    var visitors = await DB.query("SELECT * FROM visitor WHERE refer = $1", [
       id,
     ]);
     return Response.OK({
@@ -184,7 +168,7 @@ class MarkdownService {
 
   async get_visitors_dynamic_count(id, edit_code) {
     const exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -201,7 +185,7 @@ class MarkdownService {
 
   async get_visitor_stats(id, edit_code, ip) {
     const exists = await DB.query(
-      "SELECT * FROM markdown WHERE id = ?",
+      "SELECT * FROM markdown WHERE id = $1",
       [id],
       true
     );
@@ -210,7 +194,7 @@ class MarkdownService {
     const equal = await bcrypt.compare(edit_code, exists.edit_code);
     if (!equal) return Response.Unauthorized("Invalid edit code");
     const visits = await DB.query(
-      "SELECT * FROM visit WHERE markdown = ? AND refer = ?",
+      "SELECT * FROM visit WHERE markdown = $1 AND refer = $2",
       [id, ip]
     );
     return Response.OK({
@@ -220,7 +204,7 @@ class MarkdownService {
 
   async cron(min) {
     const rows = await DB.query(
-      "UPDATE cron SET min = ? WHERE base = 'root' RETURNING *",
+      "UPDATE cron SET min = $1 WHERE base = 'root' RETURNING *",
       [min]
     );
     return Response.OK(rows[0]);

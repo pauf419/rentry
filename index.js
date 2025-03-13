@@ -12,6 +12,10 @@ const DB = require("./utils/db_query");
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  next();
+});
 app.use("/static", express.static(path.join(__dirname, "static")));
 app.use(express.json());
 app.use(cookieParser());
@@ -21,6 +25,7 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+
 app.use("/api", router);
 app.get("/:id/raw", markdownController.get_raw);
 app.use(resValidator);
